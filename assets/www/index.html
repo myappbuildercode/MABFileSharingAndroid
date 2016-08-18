@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+        <link rel="stylesheet" type="text/css" href="lib/css/ionic.css">
+        <title>MAB Files</title>
+        <style>
+            .circle {
+                display: block;
+                width: 100px;
+                height: 100px;
+                margin: 1em auto;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center center;
+                -webkit-border-radius: 99em;
+                -moz-border-radius: 99em;
+                border-radius: 99em;
+                border: 2px solid #eee;
+                box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);
+                border-color: green;  
+            }
+
+            .wide-as-needed {
+              overflow: scroll;
+              white-space: nowrap;
+            }
+            .scroll { 
+              min-width: 100%;
+            }
+        </style>
+    </head>
+    <body ng-app="MABFiles" animation="slide-left-right">
+        <ion-nav-view></ion-nav-view>
+
+        <script id="login.html" type="text/ng-template">
+            <ion-view>
+    
+                <ion-content scroll="false">
+                    <div class="card">
+                        <div class="item item-icon-left">
+                            <i class="icon"><img src="img/Icon.png"></i>
+                            <h1 align="center" style="color:#0097FF;">MAB FILES</h1>
+                        </div>
+                        
+                    </div>
+
+                    <div class="card">
+                        <div class="list list-inset" >
+                          <label class="item item-input" style="background-image:url(img/text_name.png);background-size:100% 100%;">
+                            <input type="text" placeholder="UserId" value="" ng-model="userlogin.userid">
+                          </label><br />
+                          <label class="item item-input " style="background-image:url(img/text_password.png);background-size:100% 100%;">
+                            <input type="password" placeholder="Password" value="" ng-model="userlogin.password">
+                          </label>
+                        </div>
+
+                        <div class="row">
+                            <div style="width:47.5%;">
+                                <button class="button button-assertive button-full" ng-click="registerFtn();" style="border-radius:5px;">Register</button>
+                            </div>
+                            <div style="width:5%;"></div>
+                            <div style="width:47.5%;">
+                                <button class="button button-positive button-full" ng-click="loginFtn();" style="border-radius:5px;">Login</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </ion-content>
+
+                 <div class="bar bar-footer">
+                <h2 class="title">
+                <img src="img/myappbuilder.png" alt="" style="width:90px;height:40px;"/>
+                </h2>
+                </div>
+
+            </ion-view>
+        </script>
+
+        
+
+        <script id="register.html" type="text/ng-template">
+            <ion-view>
+                <ion-header-bar >
+                    <button class="button icon-left ion-chevron-left button-clear button-dark" ng-click="loginBack();">login</button>
+                    <h3 class="title">Register</h3>
+                </ion-header-bar>
+                <br /><br />
+                <ion-content scroll="false">
+                    
+                    <div class="card">
+                        <div class="list list-inset">
+                          <label class="item item-input" >
+                            <input type="text" ng-model="userDetail.fullname" placeholder="Fullname" >
+                          </label><br />
+
+                          <label class="item item-input" >
+                            <input type="text" ng-model="userDetail.username" placeholder="Username" >
+                          </label><br />
+
+                          <label class="item item-input " >
+                            <input type="email" ng-model="userDetail.email" placeholder="Email" >
+                          </label><br />
+                          
+                          
+                          <label class="item item-input" >
+                            <input type="password" ng-model="userDetail.password" placeholder="Password" ng-minlength="8" ng-maxlength="20" >
+                          </label><br />
+                          
+                          <label class="item item-input" >
+                            <input type="password" ng-model="userDetail.passwordConfirm" placeholder=" Confirm Password"  ng-minlength="8" ng-maxlength="20" >
+                          </label>
+                        </div>
+                        <div style="padding:3%;">
+                            <button class="button button-block button-assertive" ng-click="registerSubFtn()" >Register</button>
+                        </div>
+                    </div>
+
+                </ion-content>
+
+                 <div class="bar bar-footer">
+                <h2 class="title">
+                <img src="img/myappbuilder.png" alt="" style="width:90px;height:40px;"/>
+                </h2>
+                </div>
+
+            </ion-view>
+        </script>
+
+        <script id="home.html" type="text/ng-template">
+            <ion-view>
+                <ion-header-bar class="bar bar-header bar-positive" style="height:50px;">
+                    <button class="button icon-left button-clear" ng-click="logoutFtn();"><img src="img/btn_logout.png" style="width:35px;height:35px;"/></button>
+                    <h1 class="title">MAB Files</h1>
+                    <button class="button icon-right button-clear" ng-click="settingFtn($event);"><img src="img/btn_alignment.png" style="width:35px;height:35px;"/></button>
+                </ion-header-bar>
+                <ion-header-bar class="bar bar-subheader">
+                    <ion-scroll direction="x" class="wide-as-needed">
+                        <div class="button"><img src="img/h_home.png" style="width:20px;height:20px;" />Home</div> 
+                    </ion-scroll>  
+                </ion-header-bar>
+                
+                <ion-content >
+                      
+                        <!--/*<div class="list" ng-hide="data.showDelete">
+
+                          <div class="item item-button-right item-avatar-left" ng-repeat="item in filesDetail" ng-click="fileListFtn(item)">
+                            <img src="{{item.image}}">
+                            <h2>{{item.name}}</h2>
+                            <p style="color:#0404B4;">{{item.size}}</p>
+                          </div>
+
+                        </div>
+
+                        <div class="list" ng-show="data.showDelete">
+                        */-->
+
+                        <div class="list">
+
+                          <div class="item item-button-right item-avatar-left" ng-repeat="item in filesDetail">
+                            <img src="{{item.image}}" ng-click="fileListFtn(item)">
+                            <h2 ng-click="fileListFtn(item)">{{item.name}}</h2>
+                            <p style="color:#0404B4;">{{item.size}}{{item.created_at}}</p>
+                            <button class="button button-clear" ng-click="openPopover($event,item);">
+                              <i class="icon"><img src="img/arrow_down.png" style="width:75%;"/></i>
+                            </button>
+                          </div>
+
+                        </div>
+                    
+                </ion-content>
+                <ion-footer-bar class="bar-positive">
+                  <button class="button icon-left button-clear" ng-click="addFolderFtn();">
+                    <img src="img/btn_newfolder.png" style="width:100px;height:auto;"/>
+                  </button>
+                  <button class="button icon-left button-clear" ng-click="uploadFilesModal.show();">
+                    <img src="img/btn_upload.png" style="width:100px;height:auto;"/>
+                  </button>
+                  <img align="right" src="img/myappbuilder1.png" alt="" style="width:100px;height:auto;position:fixed;right:2px;"/>
+                </ion-footer-bar>
+            </ion-view>
+        </script>
+
+        <script id="my-popover.html" type="text/ng-template">
+            <ion-popover-view style="padding:1%;height:60px;background-color:#EF4E3A;background-size:100% 100%;">
+                <div class="row" style="padding:0% 10% 0% 10%;" ng-show="folderOption">
+                    <div style="width:47.5%;height:50px;">
+                        <img src="img/ic_delete.png"   ng-click="onItemDelete(itemDelRen);" style="width:60px;height:60px;" />
+                    </div>
+                    <div style="width:5%;"></div>
+                    <div style="width:47.5%;height:50px;">
+                        <img src="img/ic_rename.png"  ng-click="onItemRename(itemDelRen);" style="width:60px;height:60px;" />
+                    </div>
+                </div>
+
+                <div class="row" style="padding:0% 10% 0% 10%;" ng-hide="folderOption">
+                    <div style="width:25%;">
+                        <img src="img/ic_delete.png" ng-click="onItemDelete(itemDelRen);" style="width:60px;height:60px;" />
+                        
+                    </div>
+                    <div style="width:25%;"><img src="img/ic_share.png"  ng-click="shareData(itemDelRen);" style="width:60px;height:60px;" /></div>
+                    <div style="width:25%;"><img src="img/ic_export.png"  ng-click="downloadFile(itemDelRen);" style="width:60px;height:60px;" /></div>
+                    <div style="width:25%;">
+                        <img src="img/ic_rename.png" ng-click="onItemRename(itemDelRen);" style="width:60px;height:60px;" />
+                    </div>
+                </div>
+
+            </ion-popover-view>
+        </script>
+
+        <script id="setting-popover.html" type="text/ng-template">
+            <ion-popover-view style="padding:1%;height:60px;background-color:#EF4E3A;background-size:100% 100%;">
+                <div class="row" style="padding:0% 10% 0% 10%;">
+                    <div style="width:25%;">
+                        <img src="img/ico_az_align.png" ng-click="alignAZFtn();" style="width:50px;height:50px;" />
+                    </div>
+                    <div style="width:25%;"><img src="img/ico_date_align.png"  ng-click="alignDateFtn();" style="width:50px;height:50px;" /></div>
+                    <div style="width:25%;"><img src="img/ico_type_align.png"  ng-click="alignTypeFtn();" style="width:50px;height:50px;" /></div>
+                    <div style="width:25%;">
+                        <img src="img/btn_setting.png" ng-click="alignSettingFtn();" style="width:50px;height:50px;" />
+                    </div>
+                </div>
+            </ion-popover-view>
+        </script>
+
+        <script id="share-popover.html" type="text/ng-template">
+            <ion-popover-view style="padding:1%;height:60px;background-color:#EF4E3A;background-size:100% 100%;">
+
+                <div class="row" style="padding:0% 10% 0% 10%;">
+                    <div style="width:40%;">
+                        <img src="img/ic_mail.png" ng-click="emailshareFtn();" style="width:50px;height:50px;" />
+                    </div>
+                    <div style="width:40%;"><img src="img/ic_fb.png" ng-click="fbshareFtn();" style="width:50px;height:50px;"/></div>
+                    <div style="width:20%;"><img src="img/ic_twitter.png" ng-click="twitshareFtn();" style="width:50px;height:50px;"/></div>
+                </div>
+
+            </ion-popover-view>
+        </script>
+
+        <script id="settingPage.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">MAB Files</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="settingPageModal.hide()"></button>
+                </ion-header-bar>
+                <ion-content padding="true" style="background-color:#EFEFEF;background-size:100% 100%;">
+                    <div class="circle" style="background-image:url('img/frame.png')">
+                    </div>
+                    <div style="padding:5%;">
+                        <div class="row" style="padding:0% 5% 0% 5%;height:40px;;line-height:40px;background-color:#FFFFFF;">
+                            <div style="width:35%;">Name</div>
+                            <div style="width:65%;font-weight:bold;color:green;">{{userDetailArray.username}}</div>
+                        </div><br />
+                        <div class="row" style="padding:0% 5% 0% 5%;height:40px;;line-height:40px;background-color:#FFFFFF;">
+                            <div style="width:35%;">Space Used</div>
+                            <div style="width:55%;font-weight:bold;color:green;">{{changePercentageDet}}</div>
+                            <div id="changePercentage" style="width:10%;margin-top:5px;padding:0% 2% 0% 0%;font-size:15px;font-weight:bold;color:green;" class="button button-clear button-small" ng-click="changePercentage();" >{{changePercentageVal}}</div>
+                        </div><br />
+                        <div class="row" style="padding:0% 5% 0% 5%;height:40px;line-height:40px;background-color:#FFFFFF;">
+                            <div style="width:95%;">Help</div>
+                            <div style="width:5%;font-weight:bold;color:green;">&nbsp;>&nbsp;</div>
+                        </div><br />
+                        <div class="row" style="padding:0% 5% 0% 5%;height:40px;;line-height:40px;background-color:#FFFFFF;"  ng-click="frdShareFtn($event);">
+                            <div style="width:95%;">Tell Friends about MAB Files</div>
+                            <div style="width:5%;font-weight:bold;color:green;">&nbsp;>&nbsp;</div>
+                        </div><br />
+                        <div class="row" style="padding:0% 5% 0% 5%;height:40px;;line-height:40px;background-color:#FFFFFF;" ng-click="privacyFtn();">
+                            <div style="width:95%;">Privacy Policy</div>
+                            <div style="width:5%;font-weight:bold;color:green;">&nbsp;>&nbsp;</div>
+                        </div>
+                    </div>
+                    <br /><br />
+                </ion-content>
+            </ion-modal-view>
+        </script>
+        
+        <script id="addFolder.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">Add Folder</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="addFolderModal.hide()"></button>
+                </ion-header-bar>
+                <ion-content>
+
+                    <div class="card">
+                        <div class="list list-inset" >
+                            <label class="item item-input" >
+                                <input type="text" placeholder="Folder Name" value="" ng-model="folder.name">
+                            </label><br />
+                        </div>
+
+                        <div class="row">
+                            <div style="width:47.5%;">
+                                <!--/*<button class="button button-assertive button-full" ng-click="registerFtn();" style="border-radius:5px;" >Register</button>*/-->
+                            </div>
+                            <div style="width:5%;"></div>
+                            <div style="width:47.5%;">
+                                <button class="button button-positive button-full" ng-click="folderCreateFtn();" style="border-radius:5px;" >Create</button>
+                            </div>
+                        </div>
+                    </div>
+                
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+        <script id="editFolder.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">Rename Files</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="editFolderModal.hide();"></button>
+                </ion-header-bar>
+                <ion-content>
+
+                    <div class="card">
+                        <div class="list">
+
+                            <div class="item item-input-inset">
+                                <label class="item-input-wrapper">
+                                    <input type="text" placeholder="Folder Name" value="" ng-model="folder.editname">
+                                </label>
+                                
+                                <div class="button button-positive button-clear button-small" ng-show="editFileExtention" style="font-size:18px;">
+                                    {{editFileExtention}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div style="width:47.5%;">
+                                <!--/*<button class="button button-assertive button-full" ng-click="registerFtn();" style="border-radius:5px;" >Register</button>*/-->
+                            </div>
+                            <div style="width:5%;"></div>
+                            <div style="width:47.5%;">
+                                <button class="button button-positive button-full" ng-click="folderEditFtn();" style="border-radius:5px;">Rename</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+        <script id="uploadFiles.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">Add Files</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="uploadFilesModal.hide()"></button>
+                </ion-header-bar>
+                <ion-content>
+
+                    <div class="card">
+
+                        <!--/*<div class="list list-inset" >
+
+                            <label class="item item-input" >
+                                <!--/*<input type="file" placeholder="file" value="" id="newrootfiles" multiple>
+                                
+
+                            </label><br /> 
+
+                        </div>*/-->
+                        <div style="list">
+                            <button class="button button-full icon-left ion-images button-assertive" ng-click="addgetPhoto1();">Choose Files</button>
+                        </div>
+                        <div class="row">
+
+                            <div style="width:47.5%;">
+                                <!--/*<button class="button button-assertive button-full" ng-click="registerFtn();" style="border-radius:5px;" >Register</button>*/-->
+                            </div>
+
+                            <div style="width:5%;"></div>
+
+                            <div style="width:47.5%;">
+                                <button class="button button-positive button-full" ng-click="filesCreateFtn();" style="border-radius:5px;" >Upload</button>
+                            </div>
+
+
+                            
+                        </div>
+
+                    </div>
+
+                    <div class="card" ng-show="filePath">
+                        <div>{{filePath}}</div>
+                    </div>
+
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+
+        <script id="filesList.html" type="text/ng-template">
+
+            <ion-view>
+                <ion-header-bar class="bar bar-header bar-positive" style="height:50px;">
+                    <button class="button icon-left button-clear" ng-click="filesListBack();"><img src="img/btn_back_normal.png" style="width:35px;height:35px;"/></button>
+                    <h1 class="title">MAB Files</h1>
+                    <button class="button icon-right button-clear" ng-click="settingFtn($event);"><img src="img/btn_alignment.png" style="width:35px;height:35px;"/></button>
+                    </button>
+                    
+                </ion-header-bar>
+                <ion-header-bar class="bar bar-subheader">
+                        <ion-scroll direction="x" class="wide-as-needed">
+
+                            <div class="button" ng-click="filesListBack();">
+                            <img src="img/h_home.png" style="width:20px;height:20px;" />Home
+                            </div>
+
+                            <div class="button" ng-click="">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{homeFileName}}
+                            </div>
+
+                        </ion-scroll>    
+                </ion-header-bar>
+
+                <ion-content>
+                        
+                        
+                        <div class="list">
+
+                          <div class="item item-button-right item-avatar-left" ng-repeat="item in fileList">
+                            <img src="{{item.image}}" ng-click="fileListFtn(item)">
+                            <h2 ng-click="fileListFtn(item)">{{item.name}}</h2>
+                            <p style="color:#0404B4;">{{item.size}}{{item.created_at}}</p>
+                            <button class="button button-clear" ng-click="openPopover($event,item);">
+                              <i class="icon"><img src="img/arrow_down.png" style="width:75%;"/></i>
+                            </button>
+                          </div>
+
+                        </div>
+
+                </ion-content>
+                <ion-footer-bar class="bar-positive">
+                  <button class="button icon-left button-clear" ng-click="addFolderFtn();">
+                    <img src="img/btn_newfolder.png" style="width:100px;height:auto;"/>
+                  </button>
+                  <button class="button icon-left button-clear" ng-click="uploadFtn();">
+                    <img src="img/btn_upload.png" style="width:100px;height:auto;"/>
+                  </button> 
+                  <img align="right" src="img/myappbuilder1.png" alt="" style="width:100px;height:auto;position:fixed;right:2px;"/>
+
+                </ion-footer-bar>
+
+            </ion-view>
+        </script>
+
+        
+        <script id="addFiles.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">Add Files</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="addFilesModal.hide();"></button>
+                </ion-header-bar>
+                <ion-content>
+                    <div class="card">
+                        <!--/*<div class="list list-inset" >
+                            <label class="item item-input" >
+                                <input type="file" placeholder="file" value="" id="newfiles" multiple>
+                            </label><br />  
+                        </div>*/-->
+                        <div style="list">
+                            <button class="button button-full icon-left ion-images button-assertive" ng-click="addgetPhoto1();">Choose Files</button>
+                        </div>
+                        
+                        <div class="row">
+                            <div style="width:47.5%;">
+                                    <!--/*<button class="button button-assertive button-full" ng-click="registerFtn();" style="border-radius:5px;" >Register</button>*/-->
+                            </div>
+                            <div style="width:5%;"></div>
+                            <div style="width:47.5%;">
+                                <button class="button button-positive button-full" ng-click="filesCreateFtn();" style="border-radius:5px;" >Upload</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" ng-show="filePath">
+                        <div>{{filePath}}</div>
+                    </div>
+                    
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+
+        <script id="subfilesList.html" type="text/ng-template">
+
+            <ion-view>
+                <ion-header-bar class="bar bar-header bar-positive" style="height:50px;"> 
+                    <button class="button icon-left button-clear" ng-click="subfilesListBack();"><img src="img/btn_back_normal.png" style="width:35px;height:35px;"/></button>
+                    <h1 class="title">MAB Files</h1>
+                    <button class="button icon-right button-clear" ng-click="settingFtn($event);"><img src="img/btn_alignment.png" style="width:35px;height:35px;"/></button>
+                    
+                </ion-header-bar>
+                <ion-header-bar class="bar bar-subheader">
+                        <ion-scroll direction="x" class="wide-as-needed">
+
+                            <div class="button" ng-click="homeListBack();">
+                            <img src="img/h_home.png" style="width:20px;height:20px;" />Home
+                            </div>
+
+                            <div class="button" ng-click="subfilesListBack();">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{homeFileName}}
+                            </div>
+
+
+                            <div class="button" ng-click="">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName}}
+                            </div>
+
+                        </ion-scroll>    
+                </ion-header-bar>
+                <ion-content>
+                    
+
+                    <div class="list">
+
+                            <div class="item item-button-right item-avatar-left" ng-repeat="item in subfileList">
+                                <img src="{{item.image}}" ng-click="fileListFtn(item)">
+                                <h2 ng-click="fileListFtn(item)">{{item.name}}</h2>
+                                <p style="color:#0404B4;">{{item.size}}{{item.created_at}}</p>
+                                <button class="button button-clear" ng-click="openPopover($event,item);">
+                                  <i class="icon"><img src="img/arrow_down.png" style="width:75%;"/></i>
+                                </button>
+                            </div>
+
+                    </div>
+
+                </ion-content>
+                <ion-footer-bar class="bar-positive">
+                  <button class="button icon-left button-clear" ng-click="addFolderFtn();">
+                    <img src="img/btn_newfolder.png" style="width:100px;height:auto;"/>
+                  </button>
+                  <h1 class="title" style="opacity:0;">Title!</h1>
+                  <button class="button icon-left button-clear" ng-click="uploadFtn();">
+                    <img src="img/btn_upload.png" style="width:100px;height:auto;"/>
+                  </button>
+                </ion-footer-bar>
+
+            </ion-view>
+        </script>
+
+
+
+        <script id="subfilesList1.html" type="text/ng-template">
+
+            <ion-view>
+                <ion-header-bar class="bar bar-header bar-positive" style="height:50px;">
+                    <button class="button icon-left button-clear" ng-click="subfilesList1Back();"><img src="img/btn_back_normal.png" style="width:35px;height:35px;"/></button>
+                    <h1 class="title">MAB Files</h1>
+                    <button class="button icon-right button-clear" ng-click="settingFtn($event);"><img src="img/btn_alignment.png" style="width:35px;height:35px;"/></button>
+                    
+                </ion-header-bar>
+                <ion-header-bar class="bar bar-subheader">
+                        <ion-scroll direction="x" class="wide-as-needed">
+                            <div class="button inline-button" ng-click="homeListBack();">
+                            <img src="img/h_home.png" style="width:20px;height:20px;" />Home
+                            </div>
+                            <div class="button inline-button" ng-click="subfilesListBack();">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{homeFileName}}
+                            </div>
+                            
+                            <div class="button inline-button" ng-click="subfilesList1Back()">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName}}
+                            </div>
+                            
+                            <div class="button inline-button" ng-click="">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName1}}
+                            </div>
+                        </ion-scroll>    
+                </ion-header-bar>
+                <ion-content>
+                    
+
+                    <div class="list">
+
+                            <div class="item item-button-right item-avatar-left" ng-repeat="item in subfileList1">
+                                <img ng-click="fileListFtn(item)" src="{{item.image}}">
+                                <h2 ng-click="fileListFtn(item)" >{{item.name}}</h2>
+                                <p style="color:#0404B4;">{{item.size}}{{item.created_at}}</p>
+                                <button class="button button-clear" ng-click="openPopover($event,item);">
+                                  <i class="icon"><img src="img/arrow_down.png" style="width:75%;"/></i>
+                                </button>
+                            </div>
+
+                    </div>
+
+                </ion-content>
+                <ion-footer-bar class="bar-positive">
+                  <button class="button icon-left button-clear" ng-click="addFolderFtn();">
+                    <img src="img/btn_newfolder.png" style="width:100px;height:auto;"/>
+                  </button>
+                  <h1 class="title" style="opacity:0;">Title!</h1>
+                  <button class="button icon-left button-clear" ng-click="uploadFtn();">
+                    <img src="img/btn_upload.png" style="width:100px;height:auto;"/>
+                  </button>
+                </ion-footer-bar>
+
+            </ion-view>
+        </script>
+
+
+        <script id="subfilesList2.html" type="text/ng-template">
+
+            <ion-view>
+                <ion-header-bar class="bar bar-header bar-positive" style="height:50px;">
+                    <button class="button icon-left button-clear" ng-click="subfilesList2Back();"><img src="img/btn_back_normal.png" style="width:35px;height:35px;"/></button>
+                    <h1 class="title">MAB Files</h1>
+                    <button class="button icon-right button-clear" ng-click="settingFtn($event);"><img src="img/btn_alignment.png" style="width:35px;height:35px;"/></button>
+                    
+                </ion-header-bar>
+                <ion-header-bar class="bar bar-subheader">
+                        <ion-scroll direction="x" class="wide-as-needed">
+                            <div class="button inline-button" ng-click="homeListBack();">
+                            <img src="img/h_home.png" style="width:20px;height:20px;" />Home
+                            </div>
+                            <div class="button inline-button" ng-click="subfilesListBack();">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{homeFileName}}
+                            </div>
+                            
+                            <div class="button inline-button" ng-click="subfilesList1Back()">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName}}
+                            </div>
+                            
+                            <div class="button inline-button" ng-click="subfilesList2Back()">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName1}}
+                            </div>
+
+                            <div class="button inline-button" ng-click="">
+                            <img src="img/h_ofld.png" style="width:20px;height:20px;" />{{folderFlieName2}}
+                            </div>
+                        </ion-scroll>    
+                </ion-header-bar>
+                <ion-content>
+                    
+
+                    <div class="list">
+
+                            <div class="item item-button-right item-avatar-left" ng-repeat="item in subfileList2">
+                                <img src="{{item.image}}">
+                                <h2>{{item.name}}</h2>
+                                <p style="color:#0404B4;">{{item.size}}{{item.created_at}}</p>
+                                <button class="button button-clear" ng-click="openPopover($event,item);">
+                                  <i class="icon"><img src="img/arrow_down.png" style="width:75%;"/></i>
+                                </button>
+                            </div>
+
+                    </div>
+
+                </ion-content>
+                <ion-footer-bar class="bar-positive">
+                  <!--<button class="button icon-left button-clear" ng-click="addFolderFtn();">
+                    <img src="img/btn_newfolder.png" style="width:100px;height:auto;"/>
+                  </button>-->
+                  <h1 class="title" style="opacity:0;">Title!</h1>
+                  <button class="button icon-left button-clear" ng-click="uploadFtn();">
+                    <img src="img/btn_upload.png" style="width:100px;height:auto;"/>
+                  </button>
+                </ion-footer-bar>
+
+            </ion-view>
+        </script>
+
+
+        
+
+
+        
+
+
+        <script id="privacy.html" type="text/ng-template">
+            <ion-modal-view>
+                <ion-header-bar class="bar-positive" >
+                    <h1 class="title"><font color="white">PRIVACY POLICY</font></h1>
+                    <button class="button button-clear button-icon ion-close-circled" ng-click="privacyModal.hide();"></button>
+                </ion-header-bar>
+                <ion-content style="padding:5%;background-color:#E0FFFF;">
+                    <p style="text-align: justify;">
+                    <span style="font-family:arial,helvetica,sans-serif;align:center;"><b>MYAPPBUILDER PRIVACY POLICY</b><br />
+                        <br />
+                        The Internet is an amazing tool. It has the power to change the way we live, and we&#39;re starting to see that potential today. With only a few mouse-clicks, you can follow the news, look up facts, buy goods and services, and communicate with others from around the world. It&#39;s important to MYAPPBUILDER, LLC to help our customers retain their privacy when they take advantage of all the Internet has to offer.<br />
+                        <br />
+                        We believe your business is no one else&#39;s. Your privacy is important to you and to us. So we&#39;ll protect the information you share with us. To protect your privacy, MYAPPBUILDER, LLC&nbsp;follows different principles in accordance with worldwide practices for customer privacy and data protection.</span></p>
+                    <ul>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">We won&rsquo;t sell or give away Your Name, mail address, phone number, email address or any other information to anyone without your permission or knowledge.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">We&rsquo;ll use state-of-the-art security measures to protect your information from unauthorized users.</span></li>
+                    </ul>
+                    <p style="text-align: justify;">
+                    <br />
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;"><strong>NOTICE</strong><br />
+                        <br />
+                        We will ask you when we need information that personally identifies you (personal information) or allows us to contact you. Generally, this information is requested when you create a Registration ID on the site or when you download free software, enter a contest, order email newsletters or join a limited-access premium site. We use your Personal Information for four primary purposes:</span></p>
+                    <ul>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">To make the site easier for you to use by not having to enter information more than once.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">To help you quickly find software, services or information.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">To help us create content most relevant to you.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">To alert you to product upgrades, special offers, updated information and other new services from MYAPPBUILDER, LLC.</span></li>
+                    </ul>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;"><strong>CONSENT</strong><br />
+                        <br />
+                        If you choose not to register or provide personal information, you can still use most of MYAPPBUILDER. But you will not be able to access areas that require registration.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">If you decide to register, you will be able to select the kinds of information you want to receive from us by subscribing to various services, like our electronic newsletters. If you do not want us to communicate with you about other offers regarding MYAPPBUILDER, LLC products, programs, events, or services by email, postal mail, or telephone, you may select the option stating that you do not wish to receive marketing messages from MYAPPBUILDER, LLC.<br />
+                        <br />
+                        MYAPPBUILDER, LLC occasionally allows other companies to offer our registered customers information about their products and services, using postal mail only. If you do not want to receive these offers, you may select the option stating that you do not wish to receive marketing materials from third parties.<br />
+                        <br />
+                        <strong>ACCESS</strong><br />
+                        <br />
+                        We will provide you with the means to ensure that your personal information is correct and current. You may review and update this information at any time at the Visitor Center. There, you can:</span></p>
+                    <ul>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">View and edit personal information you have already given us.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">Tell us whether you want us to send you marketing information, or whether you want third parties to send you their offers by postal mail.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">Sign up for electronic newsletters about our services and products.</span></li>
+                        <li style="text-align: justify;">
+                            <span style="font-family:arial,helvetica,sans-serif;">Register. Once you register, you won&#39;t need to do it again. Wherever you go on [WEBSITE], your information stays with you.</span></li>
+                    </ul>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;"><strong>SECURITY</strong><br />
+                        <br />
+                        MYAPPBUILDER, LLC has taken strong measures to protect the security of your personal information and to ensure that your choices for its intended use are honored. We take strong precautions to protect your data from loss, misuse, unauthorized access or disclosure, alteration, or destruction.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">We guarantee your e-commerce transactions to be 100% safe and secure. When you place orders or access your personal account information, you&#39;re utilizing secure server software SSL, which encrypts your personal information before it&#39;s sent over the Internet. SSL is one of the safest encryption technologies available.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">In addition, your transactions are guaranteed under the Fair Credit Billing Act. This Act states that your bank cannot hold you liable for more than $50.00 in fraudulent credit card charges. If your bank does hold you liable for $50.00 or less, we&#39;ll cover your liability provided the unauthorized, fraudulent use of your credit card resulted through no fault of your own and from purchases made from us over our secure server. In the event of unauthorized use of your credit card, you must notify your credit card provider in accordance with its reporting rules and procedures.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">MYAPPBUILDER, LLC strictly protects the security of your personal information and honors your choices for its intended use. We carefully protect your data from loss, misuse, unauthorized access or disclosure, alteration, or destruction.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">Your personal information is never shared outside the company without your permission, except under conditions explained above. Inside the company, data is stored in password-controlled servers with limited access. Your information may be stored and processed in USA or any other country where MYAPPBUILDER, LLC, its subsidiaries, affiliates or agents are located.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">You also have a significant role in protecting your information. No one can see or edit your personal information without knowing your user name and password, so do not share these with others.<br />
+                        <br />
+                        <strong>NOTICE TO PARENTS</strong><br />
+                        <br />
+                        Parents or guardians: we want to help you guard your children&#39;s privacy. We encourage you to talk to your children about safe and responsible use of their Personal Information while using the Internet.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">The MYAPPBUILDER, LLC site does not publish content that is targeted to children. However, if you are concerned about your children providing MYAPPBUILDER, LLC any personal information without your consent, MYAPPBUILDER, LLC offers a Kids account. It allows parents to give parental consent for the collection, use and sharing of children&rsquo;s (ages 12 and under) personal information online.<br />
+                        <br />
+                        <strong>ENFORCEMENT</strong><br />
+                        <br />
+                        If for some reason you believe MYAPPBUILDER, LLC has not adhered to these principles, please notify us by email at privacy@MYAPPBUILDER.com, and we will do our best to determine and correct the problem promptly. Be certain the words Privacy Policy are in the Subject line.<br />
+                        <br />
+                        <strong>ELECTRONIC PRODUCT REGISTRATION</strong><br />
+                        <br />
+                        When you buy and install a new product, we may ask you to register your purchase electronically. When you do, we merge your registration information with any information you&#39;ve already left with us (we call that information your personal profile). If you haven&#39;t previously registered with us, we create a personal profile for you from your product registration information. If you ever want to review or update that information, you can visit the Profile Center, click on Update Profile, and edit any of the Personal Information in your profile. If you haven&#39;t already created a Registration ID, we will ask you to do so. This ensures that only you can access your information.<br />
+                        <br />
+                        <strong>CUSTOMER PROFILES</strong><br />
+                        <br />
+                        As mentioned above, every registered customer has a unique personal profile. Each profile is assigned a unique personal identification number, which helps us ensure that only you can access your profile.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">When you register, we create your profile, assign a personal identification number, then send this personal identification number back to your hard drive in the form of a cookie, which is a very small bit of code. This code is uniquely yours. It is your passport to seamless travel across MYAPPBUILDER.com, allowing you to download free software, order free newsletters, and visit premium sites without having to fill out registration forms with information you&#39;ve already provided. Even if you switch computers, you won&#39;t have to re-register &ndash; just use your Registration ID to identify yourself.<br />
+                        <br />
+                        <strong>What we do with the information you share</strong><br />
+                        <br />
+                        When you join us, you provide us with your contact information, including Name and email address. We use this information to send you updates about your order, questionnaires to measure your satisfaction with our service and announcements about new and exciting services that we offer. When you order from us, we ask for your credit card number and billing address. We use this information only to bill you for the product(s) you order at that time. For your convenience, we do save billing information in case you want to order from us again, but we don&#39;t use this information again without your permission.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">We occasionally hire other companies to provide limited services on our behalf, including packaging, mailing and delivering purchases, answering customer questions about products or services, sending postal mail and processing event registration. We will only provide those companies the information they need to deliver the service, and they are prohibited from using that information for any other purpose.</span></p>
+                    <p style="text-align: justify;">
+                    <br />
+                    <span style="font-family:arial,helvetica,sans-serif;">MYAPPBUILDER, LLC will disclose your personal information, without notice, only if required to do so by law or in the good faith belief that such action is necessary to: (a) conform to the edicts of the law or comply with legal process served on MYAPPBUILDER, LLC or the site; (b) protect and defend the rights or property of MYAPPBUILDER, LLC and its family of Websites, and, (c) act in urgent circumstances to protect the personal safety of users of MYAPPBUILDER, LLC, its Websites, or the public.</span><br />
+                    <br />
+                    <br />
+                    &nbsp;</p>
+                </ion-content>
+            </ion-modal-view>
+        </script>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="cordova_plugins.js"></script>
+        <script type="text/javascript" src="lib/js/ionic.bundle.js"></script>
+        <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="js/openfb.js"></script>
+        <script type="text/javascript" src="js/jsOAuth-1.3.6.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/controller.js"></script>
+
+    </body>
+</html>
